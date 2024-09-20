@@ -9,20 +9,31 @@
       </div>
       <div class="input-container">
         <%= form.label :password, class: "label" %>
-        <%= form.password_field :password, required: true, class: "input-field" %>
+        <%= form.password_field :password, required: true, class: "input-field", id: "password-field" %>
+        <i class="fas fa-eye" id="eye-icon" onclick="togglePasswordVisibility()"></i>
       </div>
       <div class="submit-container">
         <%= form.submit "Login", class: "btn-submit" %>
       </div>
     <% end %>
-
-    <div class="forgot-password">
-      <a href="#">Forgot Password?</a>
-    </div>
   </div>
 </div>
 
-<!-- CSS -->
+<script>
+  function togglePasswordVisibility() {
+    const passwordField = document.getElementById('password-field');
+    const eyeIcon = document.getElementById('eye-icon');
+
+    if (passwordField.type === 'password') {
+      passwordField.type = 'text';
+      eyeIcon.classList.add('fa-eye-slash');
+    } else {
+      passwordField.type = 'password';
+      eyeIcon.classList.remove('fa-eye-slash');
+    }
+  }
+</script>
+
 <style>
   * {
     box-sizing: border-box;
@@ -124,5 +135,16 @@
       width: 100%;
       padding: 20px;
     }
+  }
+
+  .input-container {
+    position: relative;
+  }
+
+  #eye-icon {
+    position: absolute;
+    top: 35px;
+    right: 10px;
+    cursor: pointer;
   }
 </style>

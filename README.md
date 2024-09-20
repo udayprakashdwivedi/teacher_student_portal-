@@ -1,24 +1,39 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This README documents the steps necessary to get the application up and running.
 
-Things you may want to cover:
+## Ruby Version
 
-* Ruby version
+* Ruby version: 3.2.1
 
-* System dependencies
+## System Dependencies
 
-* Configuration
+* Node Version Manager (NVM): 16.15.1
+* PostgreSQL database
 
-* Database creation
+## Configuration
 
-* Database initialization
+* No additional configuration required
 
-* How to run the test suite
+## Database Creation
 
-* Services (job queues, cache servers, search engines, etc.)
+* Run `rails db:create` to create the database
 
-* Deployment instructions
+## Database Initialization
 
-* ...
+* Run `rails db:migrate` to initialize the database
+* Run `rails db:seed` to load seed data (includes a default teacher account)
+
+## Services
+
+* No additional services required
+
+## Deployment Instructions
+
+* No deployment instructions provided
+
+## Additional Information
+
+* This application uses PostgreSQL as the database
+* NVM is used to manage Node.js versions
+* A default teacher account is created with the email "teacher@gmail.com" and password "123456" when running `rails db:seed`
