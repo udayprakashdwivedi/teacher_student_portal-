@@ -37,3 +37,4 @@ This README documents the steps necessary to get the application up and running.
 * This application uses PostgreSQL as the database
 * NVM is used to manage Node.js versions
 * A default teacher account is created with the email "teacher@gmail.com" and password "123456" when running `rails db:seed`
+* Important Note: Please hard reload once if the add student form is not open.
