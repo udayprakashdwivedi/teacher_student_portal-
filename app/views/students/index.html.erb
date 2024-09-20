@@ -1,0 +1,293 @@
+
+
+<%= button_to 'Logout', logout_path, method: :delete, class: 'btn-logout' %>
+
+<div id="student-modal" class="modal">
+  <div class="modal-content">
+    <input type="text" id="student-name" placeholder="Student Name" class="input-field">
+    <input type="text" id="student-subject" placeholder="Subject" class="input-field">
+    <input type="number" id="student-marks" placeholder="Marks" class="input-field">
+    <button id="save-student-btn" class="btn-save">Save</button>
+  </div>
+</div>
+
+<div id="edit-student-modal" class="modal">
+  <div class="modal-content">
+    <h2>Edit Student</h2>
+    <input type="text" id="edit-student-name" placeholder="Student Name" class="input-field">
+    <input type="text" id="edit-student-subject" placeholder="Subject" class="input-field">
+    <input type="number" id="edit-student-marks" placeholder="Marks" class="input-field">
+    <button id="update-student-btn" class="btn-save">Update</button>
+  </div>
+</div>
+
+<div class="table-container">
+  <table class="student-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Subject</th>
+        <th>Marks</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="student-list">
+      <% @students.each do |student| %>
+      <tr data-id="<%= student.id %>">
+        <td contenteditable="true"><%= student.name %></td>
+        <td contenteditable="true"><%= student.subject %></td>
+        <td contenteditable="true"><%= student.marks %></td>
+        <td>
+          <button class="edit-btn btn-action" data-id="<%= student.id %>">Edit</button>
+          <button class="delete-btn btn-action" data-id="<%= student.id %>">Delete</button>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<button id="new-student-btn" class="btn-add">Add New Student</button>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('td[contenteditable="true"]').forEach(cell => {
+      cell.addEventListener('blur', function() {
+        const row = this.closest('tr');
+        const studentId = row.dataset.id;
+        const updatedData = {
+          name: row.cells[0].innerText,
+          subject: row.cells[1].innerText,
+          marks: row.cells[2].innerText
+        };
+
+        fetch(`/students/${studentId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedData)
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to update student');
+          }
+        })
+        .catch(error => {
+          console.error('Error updating student:', error);
+        });
+      });
+
+      document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function() {
+          const studentId = this.dataset.id;
+          fetch(`/students/${studentId}`, { method: 'DELETE' }).then(() => {
+            this.closest('tr').remove();
+          });
+        });
+      });
+    });
+
+    document.querySelectorAll('.edit-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        const row = this.closest('tr');
+        const studentId = row.dataset.id;
+        const studentName = row.cells[0].innerText;
+        const studentSubject = row.cells[1].innerText;
+        const studentMarks = row.cells[2].innerText;
+
+        document.getElementById('edit-student-name').value = studentName;
+        document.getElementById('edit-student-subject').value = studentSubject;
+        document.getElementById('edit-student-marks').value = studentMarks;
+
+        document.getElementById('edit-student-modal').style.display = 'flex';
+
+        document.getElementById('update-student-btn').onclick = function() {
+          const updatedData = {
+            name: document.getElementById('edit-student-name').value,
+            subject: document.getElementById('edit-student-subject').value,
+            marks: document.getElementById('edit-student-marks').value
+          };
+
+          fetch(`/students/${studentId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedData)
+          })
+          .then(response => {
+            if (response.ok) {
+              alert('Student updated successfully');
+              window.location.reload();
+            } else {
+              throw new Error('Failed to update student');
+            }
+          })
+          .catch(error => {
+            console.error('Error updating student:', error);
+          });
+        };
+      });
+    });
+
+    document.getElementById('new-student-btn').addEventListener('click', function() {
+      document.getElementById('student-modal').style.display = 'flex';
+    });
+
+    document.getElementById('save-student-btn').addEventListener('click', function(event) {
+      const name = document.getElementById('student-name').value.trim();
+      const subject = document.getElementById('student-subject').value.trim();
+      const marks = document.getElementById('student-marks').value.trim();
+
+      if (!name || !subject || !marks) {
+        alert('All fields are required.');
+        event.preventDefault();
+        return;
+      }
+
+      if (isNaN(marks) || marks < 0) {
+        alert('Marks must be a positive number.');
+        event.preventDefault();
+        return;
+      }
+
+      const data = {
+        name: name,
+        subject: subject,
+        marks: marks
+      };
+
+      fetch('/students', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (response.ok) {
+          alert('Student created successfully');
+          window.location.reload();
+        } else {
+          throw new Error('Failed to create student');
+        }
+      })
+      .catch(error => {
+        console.error('Error adding student:', error);
+      });
+    });
+  });
+</script>
+
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+}
+
+.table-container {
+  margin: 20px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.student-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.student-table th, .student-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.student-table th {
+  background-color: #f2f2f2;
+}
+
+.btn-add {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  margin: 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  
+}
+
+.btn-add:hover {
+  background-color: #45a049;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 35px;
+  border-radius: 10px;
+  width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.btn-save {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn-save:hover {
+  background-color: #45a049;
+}
+
+.btn-action {
+  background-color: #008CBA;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-action:hover {
+  background-color: #007BB5;
+}
+
+.btn-logout {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  float: right;
+  margin-right: 20px;
+  margin-bottom: 20px 
+}
+
+.btn-logout:hover {
+  background-color: #c62828;
+}
+</style>

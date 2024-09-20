@@ -1,0 +1,128 @@
+<div class="login-container">
+  <div class="login-form">
+    <h2>Login</h2>
+    
+    <%= form_with url: login_path, method: :post, local: true do |form| %>
+      <div class="input-container">
+        <%= form.label :email, class: "label" %>
+        <%= form.text_field :email, required: true, class: "input-field" %>
+      </div>
+      <div class="input-container">
+        <%= form.label :password, class: "label" %>
+        <%= form.password_field :password, required: true, class: "input-field" %>
+      </div>
+      <div class="submit-container">
+        <%= form.submit "Login", class: "btn-submit" %>
+      </div>
+    <% end %>
+
+    <div class="forgot-password">
+      <a href="#">Forgot Password?</a>
+    </div>
+  </div>
+</div>
+
+<!-- CSS -->
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .login-form {
+    background-color: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+    width: 320px;
+    text-align: center;
+  }
+
+  .login-form h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .input-container {
+    margin-bottom: 20px;
+  }
+
+  .label {
+    display: block;
+    text-align: left;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #555;
+  }
+
+  .input-field {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+
+  .input-field:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.25);
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 12px;
+    background-color: #333;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-submit:hover {
+    background-color: #555;
+  }
+
+  .forgot-password {
+    margin-top: 10px;
+  }
+
+  .forgot-password a {
+    font-size: 12px;
+    color: #007bff;
+    text-decoration: none;
+  }
+
+  .forgot-password a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .login-form {
+      width: 100%;
+      padding: 20px;
+    }
+  }
+</style>
